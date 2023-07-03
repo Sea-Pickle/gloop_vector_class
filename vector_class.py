@@ -57,6 +57,18 @@ class vec:
         return sum(self*other)
     def __len__(self):
         return len(self.components)
+    def _equality_op(op):
+        def _vec_op(a,b):
+            if type(b) in (vec,vec2,vec3):
+                if len(b)==len(a):
+                    return all([op(i_a,i_b) for i_a,i_b in zip(a,b)])
+                else:
+                    raise TypeError("Vectors must have the same number of components")
+            if type(b) in (list,tuple):
+                return all([op(i,b[idx]) for idx,i in enumerate(a)])
+            if type(b) in (int,float):
+                return all([op(i,b) for i in a])
+        return _vec_op
     def _dual_op(op):
         def _vec_op(a,b):
             if type(b) in (vec,vec2,vec3):
@@ -77,12 +89,12 @@ class vec:
             new_vector = [op(i) for i in a]
             return vec.from_iterable(new_vector)
         return _vec_op
-    __eq__ = _dual_op(operator.eq)
-    __lt__ = _dual_op(operator.lt)
-    __le__ = _dual_op(operator.le)
-    __gt__ = _dual_op(operator.gt)
-    __ge__ = _dual_op(operator.ge)
-    __ne__ = _dual_op(operator.ne)
+    __eq__ = _equality_op(operator.eq)
+    __lt__ = _equality_op(operator.lt)
+    __le__ = _equality_op(operator.le)
+    __gt__ = _equality_op(operator.gt)
+    __ge__ = _equality_op(operator.ge)
+    __ne__ = _equality_op(operator.ne)
 
     __rmul__ = _dual_op(operator.mul)
     __radd__ = _dual_op(operator.add)
@@ -172,6 +184,15 @@ class vec3:
         )
     def __len__(self):
         return 3
+    def _equality_op(op):
+        def _vec_op(a,b):
+            if type(b) == vec3:
+                return op(a.x,b.x) and op(a.y,b.y) and op(a.z,b.z)
+            if type(b) in (list,tuple):
+                return op(a.x,b[0]) and op(a.y,b[1]) and op(a.z,b[2])
+            if type(b) in (int,float):
+                return op(a.x,b) and op(a.y,b) and op(a.z,b)
+        return _vec_op
     def _dual_op(op):
         def _vec_op(a,b):
             if type(b) == vec3:
@@ -185,12 +206,12 @@ class vec3:
         def _vec_op(a):
             return vec3(op(a.x), op(a.y), op(a.z))
         return _vec_op
-    __eq__ = _dual_op(operator.eq)
-    __lt__ = _dual_op(operator.lt)
-    __le__ = _dual_op(operator.le)
-    __gt__ = _dual_op(operator.gt)
-    __ge__ = _dual_op(operator.ge)
-    __ne__ = _dual_op(operator.ne)
+    __eq__ = _equality_op(operator.eq)
+    __lt__ = _equality_op(operator.lt)
+    __le__ = _equality_op(operator.le)
+    __gt__ = _equality_op(operator.gt)
+    __ge__ = _equality_op(operator.ge)
+    __ne__ = _equality_op(operator.ne)
 
     __rmul__ = _dual_op(operator.mul)
     __radd__ = _dual_op(operator.add)
@@ -294,12 +315,12 @@ class vec2:
         def _vec_op(a):
             return vec2(op(a.x), op(a.y))
         return _vec_op
-    __eq__ = _dual_op(operator.eq)
-    __lt__ = _dual_op(operator.lt)
-    __le__ = _dual_op(operator.le)
-    __gt__ = _dual_op(operator.gt)
-    __ge__ = _dual_op(operator.ge)
-    __ne__ = _dual_op(operator.ne)
+    __eq__ = _equality_op(operator.eq)
+    __lt__ = _equality_op(operator.lt)
+    __le__ = _equality_op(operator.le)
+    __gt__ = _equality_op(operator.gt)
+    __ge__ = _equality_op(operator.ge)
+    __ne__ = _equality_op(operator.ne)
 
     __rmul__ = _dual_op(operator.mul)
     __radd__ = _dual_op(operator.add)
