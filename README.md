@@ -1,5 +1,5 @@
 # gloop_vector_class
-a simple vector class for python
+A simple vector class for python
 
   This module contains 3 classes, a 'vec2' class, a 'vec3' class, and a 'vec' class.
 All of the vector types are mostly the same except their dimension; vec2 - as you might expect from the name - is a 2-dimensional vector, vec3 is 3, and vec is arbitrary.
