@@ -116,6 +116,8 @@ class vec:
     __ceil__ = _single_op(math.ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
+    __neg__ = _single_op(operator.neg)
+    __pos__ = _single_op(operator.pos)
 
 class vec3:
     def __init__(self, x, y, *z):
@@ -233,6 +235,8 @@ class vec3:
     __ceil__ = _single_op(math.ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
+    __neg__ = _single_op(operator.neg)
+    __pos__ = _single_op(operator.pos)
 
 class vec2:
     def __init__(self, x, *y):
@@ -342,3 +346,5 @@ class vec2:
     __ceil__ = _single_op(math.ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
+    __neg__ = _single_op(operator.neg)
+    __pos__ = _single_op(operator.pos)
