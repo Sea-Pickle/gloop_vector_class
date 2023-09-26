@@ -1,7 +1,5 @@
-import math,operator,decimal,numbers
+import math,operator,numbers
 #by _gloop / gloop#5445
-
-
 class vec:
     def __init__(self, *components):
         if len(components):
@@ -45,10 +43,14 @@ class vec:
             lerped_vec+=[(1-t)*i_self+t*i_other]
         return vec(lerped_vec)
     def distance(self,other):
-        return math.sqrt(sum((a-b)**2 for (a,b) in zip(self.components,other.components)))
+        return math.dist(self,other)
+    def distance2(self,other):
+        return sum((self-other)**2)
+    def normalize(self):
+        return self/self.length()
     def sign(self):
         sign_vec = [1 if i>0 else -1 if i<0 else 0 for i in self.components] 
-        return vec.from_iterable(sign_vec)
+        return vec(sign_vec)
     def in_box(self,minimum,maximum,inclusive=True):
         if inclusive:
             return all([i_min<i_self<i_max for i_min,i_self,i_max in zip(minimum,self,maximum)])
@@ -59,9 +61,13 @@ class vec:
             return self
         else:
             clamped_vec = [max(i_min,min(i_max,i_self)) for i_min,i_self,i_max in zip(minimum,self,maximum)]
-            return vec.from_iterable(clamped_vec)
+            return vec(clamped_vec)        
     def __matmul__(self,other):
-        return sum(self*other)
+        n = 0
+        for i_self in self:
+            for i_other in other:
+                n+=(i_self*i_other)
+        return n
     def __len__(self):
         return len(self.components)
     def _equality_op(op):
@@ -131,6 +137,7 @@ class vec3:
         if len(components):
             components_copy = []
             for c in components:
+                
                 if isinstance(c,(vec,vec2,vec3,list,tuple)):
                     components_copy += [i for i in c]
                 else:
@@ -173,7 +180,11 @@ class vec3:
             (1-t)*self.z+t*other.z
             )
     def distance(self,other):
-        return math.hypot(self.x-other.x,self.y-other.y,self.z-other.z)
+        return math.dist(self,other)
+    def distance2(self,other):
+        return sum((self-other)**2)
+    def normalize(self):
+        return self/self.length()
     def sign(self):
         return vec3(
         1 if self.x>0 else -1 if self.x<0 else 0,
@@ -194,7 +205,11 @@ class vec3:
         max(minimum.z, min(maximum.z, self.z))
         )
     def __matmul__(self,other):
-        return sum(self*other)
+        n = 0
+        for i_self in self:
+            for i_other in other:
+                n+=(i_self*i_other)
+        return n
     def cross(self,other):
         return vec3(
             self.y*other.z - self.z*other.y,
@@ -299,7 +314,9 @@ class vec2:
     def lerp(self,other,t):
         return vec2((1-t)*self.x+t*other.x,(1-t)*self.y+t*other.y)
     def distance(self,other):
-        return math.hypot(self.x-other.x,self.y-other.y)
+        return math.dist(self,other)
+    def distance2(self,other):
+        return sum((self-other)**2)
     def sign(self):
         return vec2(
         1 if self.x>0 else -1 if self.x<0 else 0,
@@ -320,7 +337,11 @@ class vec2:
         )
 
     def __matmul__(self,other):
-        return sum(self*other)
+        n = 0
+        for i_self in self:
+            for i_other in other:
+                n+=(i_self*i_other)
+        return n
     
     def cross(self,other):
         return (self.x*other.y)-(self.y*other.x)
@@ -378,124 +399,4 @@ class vec2:
     __neg__ = _single_op(operator.neg)
     __pos__ = _single_op(operator.pos)
 
-vector = vec | vec2 | vec3
-
-class matrix:
-    def __init__(self,*components):
-        if len(components)==1:
-            components = components[0]
-        length = len(components[0])
-        if not length:
-            raise ValueError("Matrices must have at least one row")
-        components_copy = []
-        for row in components:
-            if isinstance(row,(list,tuple,vector)):
-                components_copy+=[vec(row)]
-            if len(row) != length:
-                raise ValueError(f"Row \"{row}\" has a mismatched length")
-        self.components = components_copy
-        self.dimension = vec2(length,len(components))
-    
-    def __repr__(self):
-        return f"matrix{self.components}"
-
-    def __iter__(self):
-        yield from self.components
-    def __getitem__(self,items):
-        return list(self)[items]
-    def __setitem__(self,items,values):
-        components = list(self)
-        components[items] = values
-        self.x,self.y = components
-
-    def get_column(self,x):
-        return vec([i[x] for i in self.components])
-    def __hash__(self):
-        return hash(tuple(self))
-    def __contains__(self,val):
-        return any(val in i for i in self.components)
-    def __bool__(self):
-        return any(i!=0 for i in self.components)
-    def __len__(self):
-        return len(self.components)
-    def clamp(self,minimum,maximum):
-        return vec2(
-        max(minimum.x, min(maximum.x, self.x)),
-        max(minimum.y, min(maximum.y, self.y))
-        )
-    def clamp(self,minimum,maximum):
-        return matrix([min(x_max,max(x_min,x_self)) for x_self,x_min,x_max in zip(self,minimum,maximum)])
-
-    def __matmul__(self,other):
-        matrix_result = []
-        if isinstance(other,numbers.Real):
-            for row in self.components:
-                matrix_result.append(row*other)
-            return matrix(matrix_result)
-        if isinstance(other,(vector,matrix)):
-            result_size = vec2(other.dimension.x,self.dimension.y)
-            if (result_size.y != other.dimension.x):
-                raise ValueError("Invalid Matrix dimension")
-            if self.dimension==other.dimension:
-                if not self.dimension.x == self.dimension.y:
-                    raise ValueError("Invalid Matrix dimension")
-            columns = [other.get_column(i)for i in range(other.dimension.x)]
-            result_temp = []
-            for row in self.components:
-                for column in columns:
-                    result_temp.append(row@column)
-                    if len(result_temp)==result_size.x:
-                        matrix_result+=[vec(result_temp)]
-                        result_temp=[]
-            return matrix(matrix_result)
-    def _equality_op(op):
-        def _matrix_op(a,b):
-            if isinstance(b,matrix):
-                if a.dimension != b.dimension:
-                    raise ValueError("Invalid Matrix dimension")
-            return all([op(i_self,i_other) for i_self,i_other in zip(a,b)])
-        return _matrix_op
-    def _dual_op(op):
-        def _matrix_op(a,b):
-            if isinstance(b,matrix):
-                if a.dimension != b.dimension:
-                    raise ValueError("Invalid Matrix dimension")
-                
-                return matrix([op(i_self,i_other) for i_self,i_other in zip(a,b)])
-            if isinstance(b,numbers.Real):
-                return matrix([vec([op(x,b) for x in y]) for y in a])
-        return _matrix_op
-    def _single_op(op):
-        def _matrix_op(a):
-            return matrix([vec([op(x) for x in y]) for y in a])
-        return _matrix_op
-
-    __eq__ = _equality_op(operator.eq)
-    __lt__ = _equality_op(operator.lt)
-    __le__ = _equality_op(operator.le)
-    __gt__ = _equality_op(operator.gt)
-    __ge__ = _equality_op(operator.ge)
-    __ne__ = _equality_op(operator.ne)
-
-    __rmul__ = _dual_op(operator.mul)
-    __radd__ = _dual_op(operator.add)
-    __rsub__ = _dual_op(operator.sub)
-    __rtruediv__ = _dual_op(operator.truediv)
-    __rfloordiv__ = _dual_op(operator.floordiv)
-    __rmod__ = _dual_op(operator.mod)
-    __rpow__ = _dual_op(operator.pow)
-
-    __mul__ = _dual_op(operator.mul)
-    __add__ = _dual_op(operator.add)
-    __sub__ = _dual_op(operator.sub)
-    __truediv__ = _dual_op(operator.truediv)
-    __floordiv__ = _dual_op(operator.floordiv)
-    __mod__ = _dual_op(operator.mod)
-    __pow__ = _dual_op(operator.pow)
-    __floor__ = _single_op(math.floor) 
-    __round__ = _single_op(round)
-    __ceil__ = _single_op(math.ceil)
-    __trunc__ = _single_op(math.trunc)
-    __abs__ = _single_op(abs)
-    __neg__ = _single_op(operator.neg)
-    __pos__ = _single_op(operator.pos)
+vector = vec | vec2 | vec3 
