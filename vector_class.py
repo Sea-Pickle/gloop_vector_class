@@ -60,7 +60,7 @@ class vec:
     def clamp(self,min_,max_):
         clamped_vec = []
         for i_min,i_self,i_max in zip(min_,self,max_):
-            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec(clamped_vec)    
     def __matmul__(self,other):
         n = 0
@@ -165,8 +165,8 @@ class vec2(vec):
     def clamp(self,min_,max_):
         clamped_vec = []
         for i_min,i_self,i_max in zip(min_,self,max_):
-            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
-        return vec2(clamped_vec)    
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
+        return vec2(clamped_vec) 
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
@@ -256,8 +256,8 @@ class vec3(vec):
     def clamp(self,min_,max_):
         clamped_vec = []
         for i_min,i_self,i_max in zip(min_,self,max_):
-            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
-        return vec3(clamped_vec)    
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
+        return vec3(clamped_vec)   
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
