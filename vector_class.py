@@ -117,6 +117,10 @@ class vec:
     __rmod__ = _dual_op(operator.mod)
     __rpow__ = _dual_op(operator.pow)
 
+    sin = _single_op(math.sin)
+    cos = _single_op(math.cos)
+    tan = _single_op(math.tan)
+
     __mul__ = _dual_op(operator.mul)
     __add__ = _dual_op(operator.add)
     __sub__ = _dual_op(operator.sub)
@@ -191,6 +195,10 @@ class vec2(vec):
     __rmod__ = _dual_op(operator.mod)
     __rpow__ = _dual_op(operator.pow)
 
+    sin = _single_op(math.sin)
+    cos = _single_op(math.cos)
+    tan = _single_op(math.tan)
+
     __mul__ = _dual_op(operator.mul)
     __add__ = _dual_op(operator.add)
     __sub__ = _dual_op(operator.sub)
@@ -208,7 +216,7 @@ class vec2(vec):
 
 class vec3(vec):
     def __repr__(self):
-        return f"vec2{tuple(self.components)}"
+        return f"vec3{tuple(self.components)}"
     def __getattr__(self, attr):
         if attr in ["x","X"]:
             return self.components[0]
@@ -277,6 +285,10 @@ class vec3(vec):
     __rfloordiv__ = _dual_op(operator.floordiv)
     __rmod__ = _dual_op(operator.mod)
     __rpow__ = _dual_op(operator.pow)
+
+    sin = _single_op(math.sin)
+    cos = _single_op(math.cos)
+    tan = _single_op(math.tan)
 
     __mul__ = _dual_op(operator.mul)
     __add__ = _dual_op(operator.add)
