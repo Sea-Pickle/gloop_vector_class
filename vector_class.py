@@ -56,12 +56,12 @@ class vec:
             return all([i_min<i_self<i_max for i_min,i_self,i_max in zip(minimum,self,maximum)])
         else:
             return all([i_min<=i_self<=i_max for i_min,i_self,i_max in zip(minimum,self,maximum)])
-    def clamp(self,minimum,maximum):
-        if self.in_box(minimum,maximum):
-            return self
-        else:
-            clamped_vec = [max(i_min,min(i_max,i_self)) for i_min,i_self,i_max in zip(minimum,self,maximum)]
-            return vec(clamped_vec)        
+        
+    def clamp(self,min_,max_):
+        clamped_vec = []
+        for i_min,i_self,i_max in zip(min_,self,max_):
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
+        return vec(clamped_vec)    
     def __matmul__(self,other):
         n = 0
         for i_self in self:
@@ -198,12 +198,11 @@ class vec3:
             return min_x<=self.x<=max_x and min_y<=self.y<=max_y and min_z<=self.z<=max_z
         else:
             return min_x<self.x<max_x and min_y<self.y<max_y and min_z<self.y<max_z
-    def clamp(self,minimum,maximum):
-        return vec3(
-        max(minimum.x, min(maximum.x, self.x)),
-        max(minimum.y, min(maximum.y, self.y)),
-        max(minimum.z, min(maximum.z, self.z))
-        )
+    def clamp(self,min_,max_):
+        clamped_vec = []
+        for i_min,i_self,i_max in zip(min_,self,max_):
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
+        return vec(clamped_vec)
     def __matmul__(self,other):
         n = 0
         for i_self in self:
@@ -330,11 +329,11 @@ class vec2:
         else:
             return min_x<self.x<max_x and min_y<self.y<max_y
 
-    def clamp(self,minimum,maximum):
-        return vec2(
-        max(minimum.x, min(maximum.x, self.x)),
-        max(minimum.y, min(maximum.y, self.y))
-        )
+    def clamp(self,min_,max_):
+        clamped_vec = []
+        for i_min,i_self,i_max in zip(min_,self,max_):
+            clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_min else i_self)
+        return vec(clamped_vec)
 
     def __matmul__(self,other):
         n = 0
@@ -400,3 +399,4 @@ class vec2:
     __pos__ = _single_op(operator.pos)
 
 vector = vec | vec2 | vec3 
+
