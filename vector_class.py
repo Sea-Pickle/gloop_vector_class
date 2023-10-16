@@ -14,7 +14,6 @@ class vec:
                 else:
                     components_copy += [c]
             components = list(components_copy)
-            print(components)
             for c in components:
                 if not isinstance(c,numbers.Real):
                     raise ValueError(f"\"{c}\" is non-numeric")
