@@ -5,11 +5,16 @@ class vec:
         if len(components):
             components_copy = []
             for c in components:
+
                 if isinstance(c,(vector,list,tuple)):
+
                     components_copy += [i for i in c]
+                elif isinstance(c,complex):
+                    components_copy += [c.real,c.imag]
                 else:
                     components_copy += [c]
             components = list(components_copy)
+            print(components)
             for c in components:
                 if not isinstance(c,numbers.Real):
                     raise ValueError(f"\"{c}\" is non-numeric")
@@ -62,6 +67,10 @@ class vec:
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec(clamped_vec)    
+    def __reversed__(self):
+        return vec(self[::-1])
+    def __complex__(self):
+        return complex(self[0],self[1])
     def __matmul__(self,other):
         n = 0
         for i_self in self:
@@ -167,6 +176,8 @@ class vec2(vec):
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec2(clamped_vec) 
+    def __reversed__(self):
+        return vec2(self[::-1])
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
@@ -258,6 +269,8 @@ class vec3(vec):
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec3(clamped_vec)   
+    def __reversed__(self):
+        return vec3(self[::-1])
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
