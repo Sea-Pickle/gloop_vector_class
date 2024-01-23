@@ -5,12 +5,8 @@ class vec:
         if len(components):
             components_copy = []
             for c in components:
-
                 if isinstance(c,(vector,list,tuple)):
-
                     components_copy += [i for i in c]
-                elif isinstance(c,complex):
-                    components_copy += [c.real,c.imag]
                 else:
                     components_copy += [c]
             components = list(components_copy)
@@ -66,10 +62,6 @@ class vec:
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec(clamped_vec)    
-    def __reversed__(self):
-        return vec(self[::-1])
-    def __complex__(self):
-        return complex(self[0],self[1])
     def __matmul__(self,other):
         n = 0
         for i_self in self:
@@ -78,6 +70,12 @@ class vec:
         return n
     def __len__(self):
         return len(self.components)
+    
+    def floor(self):
+        return vec([int(i) for i in self.components])
+    def ceil(self):
+        return vec([math.ceil(i) for i in self.components])
+    
     def _equality_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
@@ -136,9 +134,9 @@ class vec:
     __floordiv__ = _dual_op(operator.floordiv)
     __mod__ = _dual_op(operator.mod)
     __pow__ = _dual_op(operator.pow)
-    __floor__ = _single_op(math.floor) 
+    __floor__ = _single_op(floor)
     __round__ = _single_op(round)
-    __ceil__ = _single_op(math.ceil)
+    __ceil__ = _single_op(ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
     __neg__ = _single_op(operator.neg)
@@ -175,8 +173,12 @@ class vec2(vec):
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec2(clamped_vec) 
-    def __reversed__(self):
-        return vec2(self[::-1])
+    
+    def floor(self):
+        return vec2([int(i) for i in self.components])
+    def ceil(self):
+        return vec2([math.ceil(i) for i in self.components])
+    
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
@@ -216,9 +218,9 @@ class vec2(vec):
     __floordiv__ = _dual_op(operator.floordiv)
     __mod__ = _dual_op(operator.mod)
     __pow__ = _dual_op(operator.pow)
-    __floor__ = _single_op(math.floor) 
+    __floor__ = _single_op(floor)
     __round__ = _single_op(round)
-    __ceil__ = _single_op(math.ceil)
+    __ceil__ = _single_op(ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
     __neg__ = _single_op(operator.neg)
@@ -268,8 +270,12 @@ class vec3(vec):
         for i_min,i_self,i_max in zip(min_,self,max_):
             clamped_vec.append(i_min if i_self<i_min else i_max if i_self>i_max else i_self)
         return vec3(clamped_vec)   
-    def __reversed__(self):
-        return vec3(self[::-1])
+    
+    def floor(self):
+        return vec3([int(i) for i in self.components])
+    def ceil(self):
+        return vec3([math.ceil(i) for i in self.components])
+    
     def _dual_op(op):
         def _vec_op(a,b):
             if isinstance(b,vector):
@@ -309,9 +315,9 @@ class vec3(vec):
     __floordiv__ = _dual_op(operator.floordiv)
     __mod__ = _dual_op(operator.mod)
     __pow__ = _dual_op(operator.pow)
-    __floor__ = _single_op(math.floor) 
+    __floor__ = _single_op(floor)
     __round__ = _single_op(round)
-    __ceil__ = _single_op(math.ceil)
+    __ceil__ = _single_op(ceil)
     __trunc__ = _single_op(math.trunc)
     __abs__ = _single_op(abs)
     __neg__ = _single_op(operator.neg)
