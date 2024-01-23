@@ -72,7 +72,7 @@ class vec:
         return len(self.components)
     
     def floor(self):
-        return vec([int(i) for i in self.components])
+        return vec([math.floor(i) for i in self.components])
     def ceil(self):
         return vec([math.ceil(i) for i in self.components])
     
@@ -175,7 +175,7 @@ class vec2(vec):
         return vec2(clamped_vec) 
     
     def floor(self):
-        return vec2([int(i) for i in self.components])
+        return vec2([math.floor(i) for i in self.components])
     def ceil(self):
         return vec2([math.ceil(i) for i in self.components])
     
@@ -272,7 +272,7 @@ class vec3(vec):
         return vec3(clamped_vec)   
     
     def floor(self):
-        return vec3([int(i) for i in self.components])
+        return vec3([math.floor(i) for i in self.components])
     def ceil(self):
         return vec3([math.ceil(i) for i in self.components])
     
