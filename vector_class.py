@@ -13,6 +13,10 @@ class vec:
             for c in components:
                 if not isinstance(c,numbers.Real):
                     raise ValueError(f"\"{c}\" is non-numeric")
+            if isinstance(self,vec2) and len(components)==1:
+                components*=2
+            if isinstance(self,vec3) and len(components)==1:
+                components*=3
             self.components = list(components)
         else:
             raise ValueError("A vector must have at least one component")
@@ -143,6 +147,7 @@ class vec:
     __pos__ = _single_op(operator.pos)
 
 class vec2(vec):
+
     def __repr__(self):
         return f"vec2{tuple(self.components)}"
     def __getattr__(self, attr):
